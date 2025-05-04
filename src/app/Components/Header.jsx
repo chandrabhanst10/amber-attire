@@ -64,7 +64,7 @@ const Header = () => {
 
 export default Header;
 
-const HeaderContainer = styled(Box)(({ theme }) => ({
+const HeaderContainer = styled(Box)({
   "& .toolbarContainer": {
     backgroundColor: "transparent !important",
     boxShadow: "none",
@@ -141,5 +141,5 @@ const HeaderContainer = styled(Box)(({ theme }) => ({
     "& .centerIcon": {
       display: "block"
     },
-  },
-}));
+  }
+});
