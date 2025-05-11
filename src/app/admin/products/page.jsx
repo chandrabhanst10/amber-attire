@@ -17,7 +17,13 @@ import {
   TextField,
   Typography,
   Avatar,
-  Pagination
+  Pagination,
+  Popover,
+  Stack,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText
 } from '@mui/material';
 import { FilterList, Search, Edit, Delete, Add } from '@mui/icons-material';
 import WithAdminLayout from '@/app/HOC/WithAdminLayout';
@@ -128,18 +134,23 @@ const products = [
 ];
 
 const ProductsTable = () => {
+
+  const [allProducts, setAllProducts] = useState(products);
+  const [anchorEl, setAnchorEl] = useState(null);
   const [selected, setSelected] = useState([]);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const rowsPerPage = 10;
   const router = useRouter()
+  const open = Boolean(anchorEl);
+  const id = open ? 'filter-popover' : undefined;
   const filtered = products.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const pageCount = Math.ceil(filtered.length / rowsPerPage);
+  const pageCount = Math.ceil(allProducts.length / rowsPerPage);
 
-  const paginated = filtered.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+  const paginated = allProducts.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -164,33 +175,67 @@ const ProductsTable = () => {
     const handleNavigation=(path)=>{
       router.push(path)
     }
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+    
 
   return (
     <Box sx={{ p: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+              <Typography variant="h5" fontWeight="bold" color='#fff'>Products</Typography>
+            </Box>
       <Box display="flex" justifyContent="space-between" mb={2}>
         <Box display="flex" gap={2}>
-          <Button variant="outlined" startIcon={<FilterList sx={{color:"#fff"}}/>} sx={{color:"#fff",border:"1px solid #fff"}}>
+          <Button variant="outlined" startIcon={<FilterList sx={{color:"#fff"}}/>} sx={{color:"#fff",border:"1px solid #fff"}} onClick={handleClick}>
             Filter
           </Button>
-          <TextField
-            placeholder="Search..."
-            variant="outlined"
-            size="small"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search sx={{color:"#fff"}}/>
-                </InputAdornment>
-              )
+
+          <Popover
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
             }}
-            sx={{color:"#fff",border:"1px solid #fff",borderRadius:"5px","::placeholder":{color:"#fff"}}}
-          />
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+          >
+            <Stack sx={{ minWidth: 150 }}>
+              <List>
+                {["Newest First","Oldest First"].map((option) => (
+                  <ListItem disablePadding>
+                    <ListItemButton
+                      key={option}
+                      onClick={() => handleOptionClick(option, "status")}
+                    >
+                      <ListItemText primary={option} />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+                <ListItem disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      setAllOrders(products);
+                      handleClose();
+                    }}
+                  >
+                    <ListItemText primary={"Clear"} />
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            </Stack>
+          </Popover>
         </Box>
         <Box display="flex" gap={1}>
-          <IconButton><Edit sx={{color:"#fff"}}/></IconButton>
-          <IconButton><Delete sx={{color:"#fff"}}/></IconButton>
+          {/* <IconButton><Edit sx={{color:"#fff"}}/></IconButton> */}
           <Button variant="outlined" startIcon={<Add sx={{color:"#fff"}}/>} sx={{color:"#fff",border:"1px solid #fff"}} onClick={()=>handleNavigation("add-product")}>
             Add Product
           </Button>
@@ -203,11 +248,11 @@ const ProductsTable = () => {
             <TableHead>
               <TableRow>
                 <TableCell padding="checkbox">
-                  <Checkbox
+                  {/* <Checkbox
                     checked={selected.length === paginated.length}
                     indeterminate={selected.length > 0 && selected.length < paginated.length}
                     onChange={handleSelectAll}
-                  />
+                  /> */}
                 </TableCell>
                 <TableCell>Product</TableCell>
                 <TableCell>Inventory</TableCell>
@@ -220,10 +265,10 @@ const ProductsTable = () => {
               {paginated.map((row) => (
                 <TableRow key={row.id} hover>
                   <TableCell padding="checkbox">
-                    <Checkbox
+                    {/* <Checkbox
                       checked={selected.includes(row.id)}
                       onChange={() => handleCheckboxClick(row.id)}
-                    />
+                    /> */}
                   </TableCell>
                   <TableCell>
                     <Box display="flex" alignItems="center" gap={2}>
@@ -245,7 +290,7 @@ const ProductsTable = () => {
         </TableContainer>
 
         <Box display="flex" justifyContent="space-between" alignItems="center" p={2}>
-          <Typography>{filtered.length} Results</Typography>
+          <Typography>{allProducts.length} Results</Typography>
           <Pagination
             count={pageCount}
             page={page}

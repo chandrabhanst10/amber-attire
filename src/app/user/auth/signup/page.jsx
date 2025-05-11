@@ -52,12 +52,12 @@ const SignUp = () => {
           onChange={handlePasswordChange}
           required={true}
         />
-        <Link href={"/Pages/auth/forgot-password"} className='forgotPasswordText'>Forgot Password?</Link>
+        <Link href={"/user/auth/forgot-password"} className='forgotPasswordText'>Forgot Password?</Link>
         <CustomButton
           type={"submit"}
           label={"Register"}
         />
-        <Typography className='redirectLink'>Already have an account?  <Link href={"/Pages/auth/signin"} className='registerLink'>Login</Link></Typography>
+        <Typography className='redirectLink'>Already have an account?  <Link href={"/user/auth/signin"} className='registerLink'>Login</Link></Typography>
       </form>
     </SignUpContainer>
     </Box>
@@ -65,7 +65,7 @@ const SignUp = () => {
   )
 }
 
-export default WithLayout(SignUp)
+export default SignUp;
 
 const SignUpContainer = styled(Box)({
   height: "100%",

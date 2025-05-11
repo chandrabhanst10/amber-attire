@@ -1,9 +1,8 @@
 "use client"
 import "./globals.css"
-import { Box, InputAdornment, Tab, Tabs, TextField, Typography, Grid } from '@mui/material'
+import { Box, Tab, Tabs, Typography, Grid } from '@mui/material'
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import SearchIcon from '@mui/icons-material/Search';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css"
@@ -12,7 +11,6 @@ import { Product1, Product2, Product3, Home1, Home2, Home3, Home4 } from '@/app/
 import WithLayout from "./HOC/WithLayout"
 import Image from "next/image"
 const HomePage = () => {
-  const [searchText, setSearchText] = useState("");
   const [tabIndex, setTabIndex] = useState(0);
   const [productList, setProductList] = useState([
     {
@@ -85,9 +83,6 @@ const HomePage = () => {
       },
     ]
   };
-  const handleSearchChange = (event) => {
-    setSearchText(event.target.value)
-  };
   const handleChange = (event, newIndex) => {
     setTabIndex(newIndex);
   };
@@ -97,44 +92,27 @@ const HomePage = () => {
   }
   const Section1 = () => {
     return <>
-      <Box className={"searchContainer"}>
-        {/* <TextField
-          variant='outlined'
-          value={searchText}
-          onChange={handleSearchChange}
-          fullWidth
-          placeholder='Search...'
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          className='searchField'
-        /> */}
-      </Box>
       <Box>
         <Typography className='productsHeading'  width={250} lineHeight={1} my={2} sx={{fontSize:{xs:"20px",sm:"20px",md:"28px",lg:"32px"}}}>New This week</Typography>
         <Box>
           <Slider {...settings}>
             <div>
-              <ProductCard productImage={Product1} productSubTitle={"V-Neck T-Shirt"} productTitle={"Embroidered Seersucker Shirt"} productPrice={"99"} productColorCount={4} />
+              <ProductCard productImage={Product1} productSubTitle={"V-Neck T-Shirt"} productTitle={"Embroidered Seersucker Shirt"} productPrice={"99"} productColorCount={4} path={"/user/products?tag=latest"}/>
             </div>
             <div>
-              <ProductCard productImage={Product2} productSubTitle={"V-Neck T-Shirt"} productTitle={"Embroidered Seersucker Shirt"} productPrice={"99"} productColorCount={4} />
+              <ProductCard productImage={Product2} productSubTitle={"V-Neck T-Shirt"} productTitle={"Embroidered Seersucker Shirt"} productPrice={"99"} productColorCount={4} path={"/user/products?tag=latest"}/>
             </div>
             <div>
-              <ProductCard productImage={Product3} productSubTitle={"V-Neck T-Shirt"} productTitle={"Embroidered Seersucker Shirt"} productPrice={"99"} productColorCount={4} />
+              <ProductCard productImage={Product3} productSubTitle={"V-Neck T-Shirt"} productTitle={"Embroidered Seersucker Shirt"} productPrice={"99"} productColorCount={4} path={"/user/products?tag=latest"}/>
             </div>
             <div>
-              <ProductCard productImage={Product1} productSubTitle={"V-Neck T-Shirt"} productTitle={"Embroidered Seersucker Shirt"} productPrice={"99"} productColorCount={4} />
+              <ProductCard productImage={Product1} productSubTitle={"V-Neck T-Shirt"} productTitle={"Embroidered Seersucker Shirt"} productPrice={"99"} productColorCount={4} path={"/user/products?tag=latest"}/>
             </div>
             <div>
-              <ProductCard productImage={Product2} productSubTitle={"V-Neck T-Shirt"} productTitle={"Embroidered Seersucker Shirt"} productPrice={"99"} productColorCount={4} />
+              <ProductCard productImage={Product2} productSubTitle={"V-Neck T-Shirt"} productTitle={"Embroidered Seersucker Shirt"} productPrice={"99"} productColorCount={4} path={"/user/products?tag=latest"}/>
             </div>
             <div>
-              <ProductCard productImage={Product3} productSubTitle={"V-Neck T-Shirt"} productTitle={"Embroidered Seersucker Shirt"} productPrice={"99"} productColorCount={4} />
+              <ProductCard productImage={Product3} productSubTitle={"V-Neck T-Shirt"} productTitle={"Embroidered Seersucker Shirt"} productPrice={"99"} productColorCount={4} path={"/user/products?tag=latest"}/>
             </div>
           </Slider>
         </Box>
@@ -146,7 +124,7 @@ const HomePage = () => {
       <div hidden={value !== index}>
         {value === index && (
           <Box p={3}>
-            <Typography>{children}</Typography>
+            <>{children}</>
           </Box>
         )}
       </div>
@@ -157,7 +135,7 @@ const HomePage = () => {
       <Grid container spacing={2}>
         {productList.slice(0, showMore).map((item, index) => {
           return <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4 }} key={index}>
-            <ProductCard productImage={item.productImage} productSubTitle={item.productSubTitle} productTitle={item.productTitle} productPrice={item.productPrice} productColorCount={item.productColorCount} />
+            <ProductCard productImage={item.productImage} productSubTitle={item.productSubTitle} productTitle={item.productTitle} productPrice={item.productPrice} productColorCount={item.productColorCount} path={"/user/products"}/>
           </Grid>
         })}
       </Grid>
@@ -212,7 +190,7 @@ const HomePage = () => {
           <TabPanel value={tabIndex} index={2}><WomenCloths /></TabPanel>
           <TabPanel value={tabIndex} index={3}><KidsCloths /></TabPanel>
         </Box>
-        <Typography align="center" variant="subtitle2" onClick={handleShowMore}>{showMore===3?<>Show More</>:<>Show Less</>}</Typography>
+        <Typography align="center" variant="subtitle2" onClick={handleShowMore} sx={{cursor:"pointer"}}>{showMore===3?<>Show More</>:<>Show Less</>}</Typography>
       </Box>
     </>
   }
@@ -228,22 +206,22 @@ const HomePage = () => {
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, sm: 6, md: 6, lg: 3 }}>
               <Box sx={{ marginTop: { xs: "0px", lg: "-100px" } }}>
-                <Image src={Home1} alt='productImage' width={300} height={350} style={{ width: '100%' }} />
+                <Image priority src={Home1} alt='productImage' width={300} height={350} style={{ width: '100%' }} />
               </Box>
             </Grid>
             <Grid size={{ xs: 12, sm: 6, md: 6, lg: 3 }}>
               <Box sx={{ marginBottom: { xs: "0px", lg: "-100px" } }}>
-                <Image src={Home2} alt='productImage' width={300} height={350} style={{ width: '100%' }} />
+                <Image priority src={Home2} alt='productImage' width={300} height={350} style={{ width: '100%' }} />
               </Box>
             </Grid>
             <Grid size={{ xs: 12, sm: 6, md: 6, lg: 3 }}>
               <Box sx={{ marginTop: { xs: "0px", lg: "-100px" } }}>
-                <Image src={Home3} alt='productImage' width={300} height={350} style={{ width: '100%' }} />
+                <Image priority src={Home3} alt='productImage' width={300} height={350} style={{ width: '100%' }} />
               </Box>
             </Grid>
             <Grid size={{ xs: 12, sm: 6, md: 6, lg: 3 }}>
               <Box sx={{ marginBottom: { xs: "0px", lg: "-100px" } }}>
-                <Image src={Home4} alt='productImage' width={300} height={350} style={{ width: '100%' }} />
+                <Image priority src={Home4} alt='productImage' width={300} height={350} style={{ width: '100%' }} />
               </Box>
             </Grid>
           </Grid>
@@ -263,9 +241,6 @@ const HomePage = () => {
 export default WithLayout(HomePage)
 const HomePageContainer = styled(Box)({
   width: "100%",
-  "& .searchContainer": {
-    padding: "10px 10%",
-  },
   "& .searchField  .MuiOutlinedInput-root": {
     borderRadius: "30px",
   },

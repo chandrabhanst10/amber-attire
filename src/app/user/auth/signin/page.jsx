@@ -38,18 +38,18 @@ const SignIn = () => {
           onChange={handlePasswordChange}
           required={true}
         />
-        <Link href={"/Pages/auth/forgot-password"} className='forgotPasswordText'>Forgot Password?</Link>
+        <Link href={"/user/auth/forgot-password"} className='forgotPasswordText'>Forgot Password?</Link>
         <CustomButton
           type={"submit"}
           label={"Login"}
         />
-        <Typography className='redirectLink'>New User?  <Link href={"/Pages/auth/signup"} className='registerLink'>Register</Link></Typography>
+        <Typography className='redirectLink'>New User?  <Link href={"/user/auth/signup"} className='registerLink'>Register</Link></Typography>
       </form>
     </SignInContainer>
   )
 }
 
-export default WithLayout(SignIn)
+export default SignIn
 const SignInContainer = styled(Box)({
   height: "100%",
   display: "flex",

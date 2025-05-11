@@ -1,4 +1,4 @@
-// src/app/Pages/products/[id]/params.js (server-side)
+// src/app/user/products/[id]/params.js (server-side)
 export async function generateStaticParams() {
     // Fetch dynamic product IDs here if necessary
     const productIds = ['1', '2', '3', '4'];

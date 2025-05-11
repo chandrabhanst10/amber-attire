@@ -1,5 +1,5 @@
 {
-  "name": "amber-attire",
+  "name": "Aangan-attire",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -17,10 +17,12 @@
     "@mui/material": "^7.0.2",
     "@mui/styled-engine-sc": "^6.4.9",
     "@netlify/next": "^1.4.9",
+    "@reduxjs/toolkit": "^2.7.0",
     "country-state-city": "^3.2.1",
     "next": "^15.1.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-redux": "^9.2.0",
     "react-slick": "^0.30.3",
     "recharts": "^2.15.3",
     "slick-carousel": "^1.8.1",

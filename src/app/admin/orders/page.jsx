@@ -9,18 +9,23 @@ import {
   TableHead,
   TableRow,
   Checkbox,
-  TablePagination,
   Button,
-  TextField,
-  InputAdornment,
   IconButton,
-  Menu,
-  MenuItem,
   Paper,
   Chip,
-  Pagination
+  Pagination,
+  Popover,
+  Stack,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Modal,
+  Typography,
+  Select,
+  MenuItem
 } from '@mui/material';
-import { FilterList, Search, Delete, Edit, Add } from '@mui/icons-material';
+import { FilterList, Edit } from '@mui/icons-material';
 import WithAdminLayout from '@/app/HOC/WithAdminLayout';
 
 const mockData = [
@@ -42,11 +47,34 @@ const mockData = [
 
 const Orders = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [search, setSearch] = useState('');
-  const [page, setPage] = useState(0);
-  const rowsPerPage = 10;
+  const [page, setPage] = useState(1);
   const [selected, setSelected] = useState([]);
+  const [openEditOrders, setOpenOrders] = useState(false);
+  const [allOrders, setAllOrders] = useState(mockData);
+  const rowsPerPage = Math.ceil(allOrders.length / 10);
+  const [rows, setRows] = useState([]);
 
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleOptionClick = (option, key) => {
+    let filteredData = allOrders.filter(item => item[key] === option);
+    setAllOrders(filteredData)
+    handleClose();
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'filter-popover' : undefined;
+
+  const payment = ['Paid', "Pending",];
+  const status = ["Ready", "Shipped", "Received"];
+
+  const paginatedData = allOrders.slice((page - 1) * 10, page * 10);
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       const newSelecteds = paginatedData.map((row) => row.id);
@@ -69,12 +97,6 @@ const Orders = () => {
     setSelected(newSelected);
   };
 
-  const filteredData = mockData.filter((row) =>
-    row.customer.toLowerCase().includes(search.toLowerCase()) ||
-    row.id.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   const isSelected = (id) => selected.includes(id);
 
@@ -94,32 +116,135 @@ const Orders = () => {
     };
     return <Chip label={status} color={colorMap[status]} size="small" />;
   };
+  const handleOpenEditModal = () => {
+    let selectedOrders = allOrders.filter(item => selected.includes(item.id))
+    setRows(selectedOrders);
+    setOpenOrders(true)
+  }
+
+  const handleChange = (index, field, value) => {
+    const updated = [...rows];
+    updated[index][field] = value;
+    setRows(updated);
+  };
+  const statusOptions = ['Ready', 'Shipped', 'Received'];
+  const paymentOptions = ['Paid', 'Pending'];
+
+  const EditOrdersModal = () => {
+    return <Modal open={openEditOrders} onClose={() => setOpenOrders(false)} disableEscapeKeyDown closeAfterTransition sx={{ display: "flex" }}>
+      <Box sx={{ p: 3, backgroundColor: '#fff', width: { xs: "90%", sm: "70%", md: "50%" }, maxHeight: "70%", overflow: "scroll", margin: "auto", borderRadius: "10px" }}>
+        <Typography>Edit Orders</Typography>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Customer</TableCell>
+                <TableCell>Payment Status</TableCell>
+                <TableCell>Status</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row, index) => (
+                <TableRow key={`${row.id}-${index}`}>
+                  <TableCell>{row.id}</TableCell>
+                  <TableCell>{row.customer}</TableCell>
+                  <TableCell>
+                    <Select
+                      value={row.payment}
+                      onChange={(e) => handleChange(index, 'payment', e.target.value)}
+                      size="small"
+                    >
+                      {paymentOptions.map((option) => (
+                        <MenuItem key={option} value={option}>{option}</MenuItem>
+                      ))}
+                    </Select>
+                  </TableCell>
+                  <TableCell>
+                    <Select
+                      value={row.status}
+                      onChange={(e) => handleChange(index, 'status', e.target.value)}
+                      size="small"
+                    >
+                      {statusOptions.map((option) => (
+                        <MenuItem key={option} value={option}>{option}</MenuItem>
+                      ))}
+                    </Select>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "20px", marginTop: "20px" }}>
+          <Button variant='outlined' onClick={() => setOpenOrders(false)}>Close</Button>
+          <Button variant='contained' onClick={() => setOpenOrders(false)}>Update</Button>
+        </Box>
+      </Box>
+    </Modal>
+  }
 
   return (
     <Box sx={{ p: 2 }}>
+      <EditOrdersModal />
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+        <Typography variant="h5" fontWeight="bold" color='#fff'>Orders</Typography>
+      </Box>
       <Box display="flex" justifyContent="space-between" mb={2}>
         <Box display="flex" gap={2}>
-          <Button variant="outlined" startIcon={<FilterList sx={{color:"#fff"}} />}sx={{color:"#fff",border:"1px solid #fff"}}>Filter</Button>
-          <TextField
-            variant="outlined"
-            size="small"
-            placeholder="Search..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search sx={{color:"#fff"}}/>
-                </InputAdornment>
-              )
+          <Button variant="outlined" startIcon={<FilterList sx={{ color: "#fff" }} />} sx={{ color: "#fff", border: "1px solid #fff" }} onClick={handleClick}>Filter</Button>
+          <Popover
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
             }}
-            sx={{color:"#fff",border:"1px solid #fff",borderRadius:"5px","::placeholder":{color:"#fff"}}}
-          />
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+          >
+            <Stack sx={{ minWidth: 150 }}>
+              <List>
+                {payment.map((option) => (
+                  <ListItem disablePadding>
+                    <ListItemButton
+                      key={option}
+                      onClick={() => handleOptionClick(option, "payment")}
+                    >
+                      <ListItemText primary={option} />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+                {status.map((option) => (
+                  <ListItem disablePadding>
+                    <ListItemButton
+                      key={option}
+                      onClick={() => handleOptionClick(option, "status")}
+                    >
+                      <ListItemText primary={option} />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+                <ListItem disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      setAllOrders(mockData);
+                      handleClose();
+                    }}
+                  >
+                    <ListItemText primary={"Clear"} />
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            </Stack>
+          </Popover>
         </Box>
-        <Box display="flex" gap={1}>
-          <IconButton><Edit sx={{color:"#fff"}}/></IconButton>
-          <IconButton><Delete sx={{color:"#fff"}}/></IconButton>
-          <Button variant="outlined" startIcon={<Add sx={{color:"#fff"}}/>} sx={{color:"#fff",border:"1px solid #fff"}}>Add Order</Button>
+        <Box>
+          {selected.length > 0 && <IconButton onClick={handleOpenEditModal}><Edit sx={{ color: "#fff" }} /></IconButton>}
         </Box>
       </Box>
 
@@ -144,8 +269,8 @@ const Orders = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {paginatedData.map((row) => (
-                <TableRow key={row.id} selected={isSelected(row.id)}>
+              {paginatedData.map((row, index) => (
+                <TableRow key={index} selected={isSelected(row.id)} hover >
                   <TableCell padding="checkbox">
                     <Checkbox
                       checked={isSelected(row.id)}
@@ -164,8 +289,8 @@ const Orders = () => {
           </Table>
         </TableContainer>
         <Box display="flex" justifyContent="space-between" alignItems="center" p={2}>
-          <Pagination count={10} variant="outlined" shape="rounded" onChange={(e, newPage) => setPage(newPage)} />
-          <Box>{filteredData.length} Results</Box>
+          <Pagination count={rowsPerPage} page={page} variant="outlined" shape="rounded" onChange={(e, newPage) => setPage(newPage)} />
+          <Box>{allOrders.length} Results</Box>
         </Box>
       </Paper>
     </Box>

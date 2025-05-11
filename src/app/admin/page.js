@@ -56,7 +56,6 @@ const Dashboard = () => {
     <Box sx={{ p: 2 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
         <Typography variant="h5" fontWeight="bold" color='#fff'>Dashboard</Typography>
-        <Button variant="outlined" startIcon={<SettingsIcon sx={{color:"#fff"}}/>} sx={{color:"#fff",border:"1px solid #fff"}}>Manage</Button>
       </Box>
       <Grid container spacing={2}>
         {[

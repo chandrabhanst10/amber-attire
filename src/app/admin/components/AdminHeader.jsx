@@ -49,8 +49,8 @@ const AdminHeader = ({children}) => {
                     <Box display="flex" alignItems="center" gap={2}>
                         <Typography variant="h6" sx={{ fontWeight: 'bold', fontFamily: 'cursive' }}>
                             <span style={{ color: '#ffcc00' }}>
-                                <Image src={HeaderCenterIcon} width={15} height={15} alt="Website Logo" />
-                            </span> Amber Attire
+                                <Image priority src={HeaderCenterIcon} width={15} height={15} alt="Website Logo" />
+                            </span> Aangan Attire
                         </Typography>
                         {!isMobile && (
                             <Box

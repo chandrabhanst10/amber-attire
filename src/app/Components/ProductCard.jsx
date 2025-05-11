@@ -12,9 +12,9 @@ const ProductCard = ({ productImage, productTitle, productSubTitle, productPrice
   };
     return (
         <ProductCardContainer sx={{ maxWidth: 345,margin:"auto" }} onClick={()=>handleNavigation(path)}>
-            <Image src={productImage} style={{width:"100%",height:"100%"}} alt='productImage' width={100} height={100}/>
+            <Image src={productImage} style={{width:"100%",height:"100%"}} alt='productImage' width={100} height={100} priority/>
             <CardContent>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>{productSubTitle}</Typography>
+                <Typography component={"div"} variant="body2" sx={{ color: 'text.secondary' }}>{productSubTitle}</Typography>
                 <Box className="priceContainer">
                     <Typography className='productTitle'>{productTitle}</Typography>
                     <Typography className='productPrice'>&#8377;{productPrice}</Typography>
@@ -27,6 +27,7 @@ const ProductCard = ({ productImage, productTitle, productSubTitle, productPrice
 export default ProductCard
 const ProductCardContainer = styled(Card)({
     margin: "auto !important",
+    cursor:"pointer",
     "& .priceContainer":{
         display:"flex",
         justifyContent:"space-between",

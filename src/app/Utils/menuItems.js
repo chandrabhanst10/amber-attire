@@ -8,32 +8,32 @@ const menuItems = [
   {
     label: 'My Profile',
     icon: <AccountCircleIcon />,
-    path: '/Pages/profile',
+    path: '/user/profile',
   },
   {
     label: 'Products',
     icon: <AccountCircleIcon />,
-    path: '/Pages/products',
+    path: '/user/products',
   },
   {
     label: 'My Orders',
     icon: <HistoryIcon />,
-    path: '/Pages/orders',
+    path: '/user/orders',
   },
   {
     label: 'Wishlist',
     icon: <FavoriteIcon />,
-    path: '/Pages/wishlist',
+    path: '/user/wishlist',
   },
   {
     label: 'My Cart',
     icon: <ShoppingCartIcon />,
-    path: '/Pages/cart',
+    path: '/user/cart',
   },
   {
     label: 'Help & Support',
     icon: <HelpIcon />,
-    path: '/Pages/help',
+    path: '/user/help',
   },
 ];
 

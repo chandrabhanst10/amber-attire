@@ -24,26 +24,18 @@ const UserProfile = () => {
     phone: "+91 9876543210",
     password: "",
   });
-
   const [billingAddress, setBillingAddress] = useState("123, Bhopal, India");
   const [shippingAddress, setShippingAddress] = useState("456, Mumbai, India");
-
   const [isEditing, setIsEditing] = useState(false);
   const [profilePic, setProfilePic] = useState(
     "https://via.placeholder.com/100"
   );
-
-  // Handle Change in Inputs
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
-
-  // Toggle Editing Mode
   const toggleEdit = () => {
     setIsEditing(!isEditing);
   };
-
-  // Handle Profile Picture Upload
   const handleProfilePicChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -54,7 +46,6 @@ const UserProfile = () => {
 
   return (
     <ProfileContainer>
-      {/* Profile Header */}
       <ProfileHeader>
         <Avatar src={profilePic} sx={{ width: 100, height: 100 }} />
         <IconButton component="label" sx={cameraIconStyle}>
@@ -62,12 +53,9 @@ const UserProfile = () => {
           <input type="file" hidden accept="image/*" onChange={handleProfilePicChange} />
         </IconButton>
       </ProfileHeader>
-
-      {/* User Info */}
       <Typography variant="h5" fontWeight="bold" align="center" margin={2}>
         My Profile
       </Typography>
-
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <StyledTextField
@@ -111,14 +99,10 @@ const UserProfile = () => {
           />
         </Grid>
       </Grid>
-
-      {/* Address Section */}
       <Typography variant="h6" fontWeight="bold" sx={{ mt: 3 }}>
         Address Details
       </Typography>
-
       <Grid container spacing={2}>
-        {/* Billing Address Card */}
         <Grid item xs={12} sm={6}>
           <StyledCard>
             <CardContent>
@@ -135,8 +119,6 @@ const UserProfile = () => {
             </CardContent>
           </StyledCard>
         </Grid>
-
-        {/* Shipping Address Card */}
         <Grid item xs={12} sm={6}>
           <StyledCard>
             <CardContent>
@@ -154,8 +136,6 @@ const UserProfile = () => {
           </StyledCard>
         </Grid>
       </Grid>
-
-      {/* Action Buttons */}
       <ActionButtons>
         {isEditing ? (
           <SaveButton variant="contained" startIcon={<SaveIcon />} onClick={toggleEdit}>
@@ -172,8 +152,6 @@ const UserProfile = () => {
 };
 
 export default WithLayout(UserProfile)
-
-// Styled Components
 const ProfileContainer = styled(Box)(({ theme }) => ({
   maxWidth: "700px",
   margin: "auto",

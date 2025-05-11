@@ -1,31 +1,17 @@
 "use client"
-import { Box, Button, Divider, FormControl, Grid, InputLabel, List, ListItem, MenuItem, Radio, Select, TextField, Typography } from '@mui/material'
+import { Box, Divider, FormControl, Grid, InputLabel, MenuItem, Modal, Paper, Select, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
 import CustomInput from '@/app/Components/CustomInput';
 import { Country, State, City } from 'country-state-city';
 import CustomButton from '@/app/Components/CustomButton';
-import Link from 'next/link';
 import WithLayout from '@/app/HOC/WithLayout';
-const TabPanel = ({ children, value, index }) => {
-  return (
-    <div hidden={value !== index}>
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-};
+
 const Checkout = () => {
-  const [tabIndex, setTabIndex] = useState(0);
   const [formData, setFormData] = useState({})
   const [countries, setCountries] = useState(Country.getAllCountries())
   const [cities, setCities] = useState([])
+  const [addAddressModal, setAddAddressModal] = useState(false)
   const products = [
     {
       id: 1,
@@ -95,9 +81,9 @@ const Checkout = () => {
       [name]: value,
     }));
   }
-  const handleChange = (event, newIndex) => {
-    setTabIndex(newIndex);
-  };
+  const handleClose = () => {
+    setAddAddressModal(!addAddressModal)
+  }
   const InformationTab = () => {
     return <Box>
       <form className="signUpBox" >
@@ -222,98 +208,7 @@ const Checkout = () => {
 
     </Box>
   }
-  const PaymentsTab = () => {
-    const [selectedMethod, setSelectedMethod] = useState("credit");
-
-    // Payment options
-    const paymentMethods = [
-      { id: "credit", label: "Credit Card" },
-      { id: "debit", label: "Debit Card" },
-      { id: "upi", label: "UPI" },
-    ];
-    return <Box>
-      <OrderCardContainer>
-        {/* Order Info */}
-        <Box className="order-info">
-          <Typography className="order-id">
-            Order <b>#1646988613_694623663</b>
-          </Typography>
-          <Box className="price">
-            69 <Typography className="currency">$</Typography>
-          </Box>
-        </Box>
-
-        {/* Description Section */}
-        <Box className="description">
-          <Typography className="description-title">Description</Typography>
-          <Typography variant="body2">Order description</Typography>
-        </Box>
-      </OrderCardContainer>
-      <PaymentContainer>
-        <Typography className="payment-title">Select a payment method:</Typography>
-
-        {/* Payment Options List */}
-        <List className="payment-list">
-          {paymentMethods.map(({ id, label }) => (
-            <Box key={id}>
-              {/* Payment Option */}
-              <ListItem
-                className="payment-option"
-                onClick={() => setSelectedMethod(id === selectedMethod ? null : id)}
-              >
-                <Radio checked={selectedMethod === id} />
-                <Typography>{label}</Typography>
-              </ListItem>
-
-              {/* Show Form Only if Selected */}
-              {selectedMethod === id && (
-                <Box className="payment-form">
-                  {id === "upi" ? (
-                    <TextField
-                      fullWidth
-                      label="Enter UPI ID"
-                      variant="outlined"
-                      className="input-field"
-                    />
-                  ) : (
-                    <>
-                      <TextField
-                        fullWidth
-                        label="Card Number"
-                        variant="outlined"
-                        className="input-field"
-                      />
-                      <Box display="flex" gap={2}>
-                        <TextField
-                          fullWidth
-                          label="MM / YY"
-                          variant="outlined"
-                          className="input-field"
-                        />
-                        <TextField
-                          fullWidth
-                          label="CVV"
-                          variant="outlined"
-                          className="input-field"
-                        />
-                      </Box>
-                      <Typography variant="body2">
-                        Data is protected under PCI DSS. We do not store your data.
-                      </Typography>
-                    </>
-                  )}
-                  <Button fullWidth className="pay-button">
-                    Pay
-                  </Button>
-                </Box>
-              )}
-            </Box>
-          ))}
-        </List>
-      </PaymentContainer>
-    </Box>
-  }
-  const SelectedProductsList = ({product}) => {
+  const SelectedProductsList = ({ product }) => {
     return <StyledProductCard key={product.id}>
       <Grid container spacing={1}>
         <Grid item xs={3} sm={2}>
@@ -330,50 +225,56 @@ const Checkout = () => {
       </Grid>
     </StyledProductCard>
   }
-  const OrderSummary=()=>{
-    return<OrderSummaryContainer>
-    <Typography variant="h6" fontWeight="bold">
-      YOUR ORDER
-    </Typography>
-    <ProductListContainer>
-      {products.map((product) => (
-        <SelectedProductsList product={product} />
-      ))}
-    </ProductListContainer>
-    <Divider />
-    <Grid container justifyContent="space-between" mt={2}>
-      <Typography fontWeight="bold">Subtotal</Typography>
-      <Typography>${products.reduce((sum, p) => sum + p.price * p.quantity, 0)}.00</Typography>
-    </Grid>
-    <Grid container justifyContent="space-between" mt={1}>
-      <Typography fontWeight="bold">Shipping</Typography>
-      <Typography color="gray">Calculated at next step</Typography>
-    </Grid>
-    <Divider sx={{ my: 2 }} />
-    <Grid container justifyContent="space-between">
-      <Typography fontWeight="bold">Total</Typography>
-      <Typography fontWeight="bold">${products.reduce((sum, p) => sum + p.price * p.quantity, 0)}.00</Typography>
-    </Grid>
-  </OrderSummaryContainer>
+  const OrderSummary = () => {
+    return <OrderSummaryContainer >
+      <Typography variant="h6" fontWeight="bold">
+        YOUR ORDER
+      </Typography>
+      <ProductListContainer>
+        {products.map((product) => (
+          <SelectedProductsList product={product} />
+        ))}
+      </ProductListContainer>
+      <Divider />
+      <Grid container justifyContent="space-between" mt={2}>
+        <Typography fontWeight="bold">Subtotal</Typography>
+        <Typography>${products.reduce((sum, p) => sum + p.price * p.quantity, 0)}.00</Typography>
+      </Grid>
+      <Grid container justifyContent="space-between" mt={1}>
+        <Typography fontWeight="bold">Shipping</Typography>
+        <Typography color="gray">Calculated at next step</Typography>
+      </Grid>
+      <Divider sx={{ my: 2 }} />
+      <Grid container justifyContent="space-between">
+        <Typography fontWeight="bold">Total</Typography>
+        <Typography fontWeight="bold">${products.reduce((sum, p) => sum + p.price * p.quantity, 0)}.00</Typography>
+      </Grid>
+    </OrderSummaryContainer>
+  }
+  const AddAddressModal = () => {
+    return <AddAddressModalContainer>
+      <Modal
+        open={addAddressModal}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box>
+          <InformationTab />
+        </Box>
+      </Modal>
+    </AddAddressModalContainer>
   }
 
   return (
     <CheckoutContainer>
-      <Grid container spacing={1}>
-        <Grid item xs={12} sm={12} md={6} lg={6} order={{ xs: 2, md: 1 }}>
-          <Box sx={{ width: "100%" }}>
-            <Tabs value={tabIndex} onChange={handleChange}>
-              <Tab label="Information" />
-              <Tab label="Payments" />
-            </Tabs>
-            <TabPanel value={tabIndex} index={0}><InformationTab /></TabPanel>
-            <TabPanel value={tabIndex} index={1}><PaymentsTab /></TabPanel>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={12} md={6} lg={6} order={{ xs: 2, md: 1 }}>
-          <OrderSummary/>
-        </Grid>
-      </Grid>
+      <Box sx={{ width: { xs: "100%", lg: "50%" } }}>
+        <Paper>
+
+        <OrderSummary />
+        <AddAddressModal />
+        </Paper>
+      </Box>
     </CheckoutContainer>
   )
 }
@@ -381,6 +282,10 @@ const Checkout = () => {
 export default WithLayout(Checkout)
 
 const CheckoutContainer = styled(Box)({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "100%",
   height: "100%",
   display: "flex",
   overflowY: "auto",
@@ -419,92 +324,6 @@ const CheckoutContainer = styled(Box)({
     cursor: "pointer"
   }
 })
-const OrderCardContainer = styled(Box)({
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  // width: "100%",
-  padding: "16px",
-  borderRadius: "12px",
-  border: "1px solid #DDE2E5",
-
-  "& .order-info": {
-    display: "flex",
-    flexDirection: "column",
-  },
-
-  "& .order-id": {
-    fontSize: "16px",
-  },
-
-  "& .price": {
-    display: "flex",
-    alignItems: "center",
-    fontSize: "32px",
-    fontWeight: "bold",
-    color: "#1A1A1A",
-  },
-
-  "& .currency": {
-    fontSize: "24px",
-    fontWeight: "500",
-    color: "#6B7280",
-    marginLeft: "4px",
-  },
-
-  "& .description": {
-    textAlign: "right",
-  },
-
-  "& .description-title": {
-    fontWeight: "bold",
-  },
-});
-const PaymentContainer = styled(Box)({
-  padding: "16px",
-  borderRadius: "12px",
-  border: "1px solid #DDE2E5",
-  background: "#fff",
-  marginTop: "50px",
-  "& .payment-title": {
-    fontSize: "20px",
-    fontWeight: "bold",
-    marginBottom: "16px",
-  },
-
-  "& .payment-list": {
-    borderBottom: "1px solid #DDE2E5",
-  },
-
-  "& .payment-option": {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    padding: "12px",
-    cursor: "pointer",
-  },
-
-  "& .payment-form": {
-    marginTop: "8px",
-    padding: "16px",
-    borderRadius: "8px",
-    background: "#F9FAFB",
-  },
-
-  "& .input-field": {
-    marginBottom: "12px",
-  },
-
-  "& .pay-button": {
-    marginTop: "12px",
-    background: "#FFD700",
-    color: "#000",
-    fontWeight: "bold",
-    "&:hover": {
-      background: "#FFC107",
-    },
-  },
-});
 const StyledProductCard = styled(Box)({
   padding: "16px",
   borderBottom: "1px solid #e0e0e0",
@@ -512,7 +331,7 @@ const StyledProductCard = styled(Box)({
   borderRadius: "8px",
   display: "flex",
   alignItems: "flex-start",
-  margin:"10px 0px",
+  margin: "10px 0px",
   "& .product-image": {
     width: "100%",
     maxHeight: "100px",
@@ -555,7 +374,6 @@ const StyledProductCard = styled(Box)({
   },
 });
 const OrderSummaryContainer = styled(Box)({
-  maxWidth: "600px",
   margin: "auto",
   padding: "20px",
   background: "#fff",
@@ -575,3 +393,6 @@ const ProductListContainer = styled(Box)({
   /* Hide scrollbar for IE, Edge, and other legacy browsers */
   "-ms-overflow-style": "none",
 });
+const AddAddressModalContainer = styled(Box)({
+
+})

@@ -14,7 +14,7 @@ const ForgotPassword = () => {
         setEmail(event.target.value)
     };
     const handleForgotPassword = () => {
-        router.push('/Pages/auth/verify-otp')
+        router.push('/user/auth/verify-otp')
     };
     return (
         <ForgotPasswordContainer>
@@ -35,9 +35,9 @@ const ForgotPassword = () => {
     )
 }
 
-export default WithLayout(ForgotPassword)
+export default ForgotPassword
 const ForgotPasswordContainer = styled(Box)({
-    height: "100%",
+    height: "100vh",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",

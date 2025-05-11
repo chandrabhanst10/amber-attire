@@ -31,6 +31,7 @@ import {
     Settings
 } from '@mui/icons-material';
 import { useNavigate } from '@/app/Utils/Navigation';
+import Loader from '@/app/Components/Loader';
 
 const drawerWidth = 240;
 
@@ -64,23 +65,23 @@ const Drawer = styled(MuiDrawer, {
     boxSizing: 'border-box',
     ...(open
         ? {
-              width: drawerWidth,
-              '& .MuiDrawer-paper': {
-                  width: drawerWidth,
-                  backgroundColor: '#060621',
-                  color: '#fff',
-                  transition: 'width 0.3s ease',
-              },
-          }
+            width: drawerWidth,
+            '& .MuiDrawer-paper': {
+                width: drawerWidth,
+                backgroundColor: '#060621',
+                color: '#fff',
+                transition: 'width 0.3s ease',
+            },
+        }
         : {
-              width: 64,
-              '& .MuiDrawer-paper': {
-                  width: 64,
-                  backgroundColor: '#060621',
-                  color: '#fff',
-                  transition: 'width 0.3s ease',
-              },
-          }),
+            width: 64,
+            '& .MuiDrawer-paper': {
+                width: 64,
+                backgroundColor: '#060621',
+                color: '#fff',
+                transition: 'width 0.3s ease',
+            },
+        }),
 }));
 
 const SidebarContainer = styled(Box)`
@@ -100,7 +101,14 @@ export default function AdminHeader2({ children }) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const isMobile = useMediaQuery('(max-width:600px)');
     const navigate = useNavigate();
+    const [loading, setLoading] = React.useState(true);
+    React.useEffect(() => {
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 500);
 
+        return () => clearTimeout(timer);
+    }, []);
     const mainMenu = [
         { text: 'Dashboard', icon: <Dashboard sx={{ color: '#fff' }} />, path: '/admin' },
         { text: 'Orders', icon: <Inventory2 sx={{ color: '#fff' }} />, path: '/admin/orders' },
@@ -134,11 +142,11 @@ export default function AdminHeader2({ children }) {
                         <Box display="flex" alignItems="center" gap={2}>
                             <Typography variant="h6" sx={{ fontWeight: 'bold', fontFamily: 'cursive' }}>
                                 <span style={{ color: '#ffcc00' }}>
-                                    <Image src={HeaderCenterIcon} width={15} height={15} alt="Logo" />
-                                </span>{' '}
-                                Amber Attire
+                                    <Image priority src={HeaderCenterIcon} width={15} height={15} alt="Logo" />
+                                </span>
+                                Aangan Attire
                             </Typography>
-                            {!isMobile && (
+                            {/* {!isMobile && (
                                 <Box
                                     sx={{
                                         display: 'flex',
@@ -151,17 +159,14 @@ export default function AdminHeader2({ children }) {
                                     <SearchIcon sx={{ color: 'gray', mr: 1 }} />
                                     <InputBase placeholder="Search..." sx={{ color: '#fff' }} />
                                 </Box>
-                            )}
+                            )} */}
                         </Box>
                         <Box display="flex" alignItems="center" gap={2}>
-                            <IconButton>
-                                <MessageIcon sx={{ color: '#fff' }} />
-                            </IconButton>
-                            <IconButton>
-                                <Badge badgeContent={5} color="primary">
-                                    <NotificationsIcon sx={{ color: '#fff' }} />
-                                </Badge>
-                            </IconButton>
+                            <Badge badgeContent={5} color="primary">
+                                <IconButton onClick={() => navigate("/admin/inbox")}>
+                                    <MessageIcon sx={{ color: '#fff' }} />
+                                </IconButton>
+                            </Badge>
                             <Avatar sx={{ bgcolor: 'green' }}>R</Avatar>
                             {!isMobile && (
                                 <Box display="flex" alignItems="center" onClick={handleMenuOpen} sx={{ cursor: 'pointer' }}>
@@ -210,7 +215,7 @@ export default function AdminHeader2({ children }) {
                 }}
             >
                 <DrawerHeader />
-                {children}
+                {loading ? <Loader /> : children}
             </Box>
         </Box>
     );

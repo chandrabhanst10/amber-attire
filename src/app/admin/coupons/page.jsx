@@ -20,9 +20,15 @@ import {
     Chip,
     Pagination,
     InputAdornment,
+    Modal,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
 } from "@mui/material";
 import { Edit, Delete, FilterList, Search } from "@mui/icons-material";
 import WithAdminLayout from "@/app/HOC/WithAdminLayout";
+import { useRouter } from "next/navigation";
 
 const couponData = [
     { name: "Summer discount 10% off", code: "Summer2020", usage: 15, status: "Active", date: "May 5, 2020 - May 15, 2020" },
@@ -39,7 +45,12 @@ const couponData = [
 
 const Coupons = () => {
     const [tab, setTab] = useState(0);
-
+    const router = useRouter();
+    const [couponType, setCouponType] = useState('Fixed Discount');
+    const [couponTypes, setCouponTypes] = useState(['Fixed Discount', 'Percentage Discount', 'Free Shipping', 'Price Discount']);
+    const [createCoupon, setCreateCoupon] = useState(false)
+    const [couponFormData,setCouponFormData]=useState({});
+    const [anchorEl, setAnchorEl] = useState(null);
     const handleTabChange = (event, newValue) => {
         setTab(newValue);
     };
@@ -49,25 +60,91 @@ const Coupons = () => {
         if (tab === 2) return coupon.status === "Expired";
         return true;
     });
+    const handleCreateCouponChange=(event)=>{
+        setCouponFormData((prev)=>({
+            ...prev,
+            [event.target.name]:event.target.value
+        }))
+    }
+    const handleSubmit=(event)=>{
+        event.preventDefault();
+        console.log("@@@@handleSubmit",couponFormData);
+        
+    }
+    const CreateCouponModal = () => {
+        return (
+            <Modal open={createCoupon} onClose={() => setCreateCoupon(false)} disableEscapeKeyDown closeAfterTransition sx={{ display: "flex" }}>
+                <Box sx={{ p: 3, backgroundColor: '#fff', width: { xs: "90%", sm: "70%", md: "50%" }, margin: "auto", borderRadius: "10px" }}>
+                    <form onSubmit={handleSubmit}>
+                    <Typography variant="h5">Create Coupon</Typography>
+                    <Box p={2} backgroundColor={"#fff"} borderRadius={"10px"}>
+                        <Box mb={3}>
+                            <Typography variant="subtitle1" mb={1}>Coupon Information</Typography>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={6}>
+                                    <TextField fullWidth variant="outlined" label="Coupon Code" placeholder="Enter code" name="couponCode" onChange={handleCreateCouponChange}/>
+                                </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <TextField fullWidth variant="outlined" label="Coupon Name" placeholder="Enter name" name="couponName" onChange={handleCreateCouponChange}/>
+                                </Grid>
+                            </Grid>
+                        </Box>
+                        <Box mb={3}>
+                            <Typography variant="subtitle1" mb={1} color='#000'>Coupon Type</Typography>
+                            <Grid container spacing={2}>
+                                {couponTypes.map((type) => (
+                                    <Grid item xs={6} md={3} key={type}>
+                                        <Button
+                                        type="button"
+                                            fullWidth
+                                            variant={couponType === type ? 'contained' : 'outlined'}
+                                            onClick={() => setCouponType(type)}
+                                            sx={{ color: couponType === type ? '#FFF' : '#000' }}
+                                        >
+                                            {type}
+                                        </Button>
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        </Box>
+                        <Box mb={3}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={6}>
+                                <Typography variant="subtitle1" mb={1}>Coupon Percentage</Typography>
+                                    <TextField type="number" fullWidth variant="outlined" name="couponPercentage" onChange={handleCreateCouponChange} />
+                                </Grid>
+                            </Grid>
+                        </Box>
+                    </Box>
+                    <Box display="flex" justifyContent="flex-end" gap={2}>
+                        <Button variant="outlined">Cancel</Button>
+                        <Button variant="contained">Save</Button>
+                    </Box>
+                    </form>
+                </Box>
+            </Modal>
+        );
+    }
 
     return (
         <Box p={3}>
-                <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                    <Typography variant="h5" fontWeight="bold" color="#fff">
-                        Coupons
-                    </Typography>
-                    <Button
-                        variant="outlined"
-                        sx={{
-                            border: "1px solid #fff",
-                            color: "#fff",
-                            "&:hover": { backgroundColor: "#115293" },
-                        }}
-                    >
-                        + Create
-                    </Button>
-                </Box>
-                        <Paper elevation={2} sx={{ p: 2, mb: 3 }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+                <Typography variant="h5" fontWeight="bold" color="#fff">
+                    Coupons
+                </Typography>
+                <Button
+                    variant="outlined"
+                    sx={{
+                        border: "1px solid #fff",
+                        color: "#fff",
+                        "&:hover": { backgroundColor: "#115293" },
+                    }}
+                    onClick={() => setCreateCoupon(true)}
+                >
+                    + Create
+                </Button>
+            </Box>
+            <Paper elevation={2} sx={{ p: 2, mb: 3 }}>
                 <Tabs value={tab} onChange={handleTabChange} textColor="primary" indicatorColor="primary" sx={{ mb: 3 }}>
                     <Tab label="All Coupons" />
                     <Tab label="Active Coupons" />
@@ -85,7 +162,7 @@ const Coupons = () => {
                     </Grid>
                     <Grid item xs>
                         <TextField
-                        size="small"
+                            size="small"
                             placeholder="Search..."
                             fullWidth
                             InputProps={{
@@ -154,6 +231,7 @@ const Coupons = () => {
                     <Pagination count={24} page={2} shape="rounded" color="primary" />
                 </Box>
             </Paper>
+            <CreateCouponModal />
         </Box>
     );
 };

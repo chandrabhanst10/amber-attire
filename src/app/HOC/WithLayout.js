@@ -23,7 +23,9 @@ const WithLayout = (WrappedComponent) => {
                 <Box className={"mainContent"}>
                     {loading ? <Loader /> : <WrappedComponent {...props} />}
                 </Box>
-                <Footer />
+                <Box className="footerContainer">
+                    <Footer />
+                </Box>
             </MainContainer>
         );
     };
@@ -31,7 +33,17 @@ const WithLayout = (WrappedComponent) => {
 
 export default WithLayout;
 const MainContainer = styled(Box)({
+    // height:"100vh",
+    position: "relative",
+    "& .footerContainer": {
+        position: "fixed",
+        width: "100%",
+        left: 0,
+        bottom: 0,
+    },
     "& .mainContent": {
         padding: "1% 2%",
+        height:"78vh",
+        overflow:"scroll"
     }
 });

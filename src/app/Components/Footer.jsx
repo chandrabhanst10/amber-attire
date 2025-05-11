@@ -9,7 +9,7 @@ const Footer = () => {
                 sx={{
                     py: 3,
                     px: 2,
-                    mt: 'auto',
+                    mt: 3,
                     backgroundColor: (theme) =>
                         theme.palette.mode === 'light' ? '#f5f5f5' : theme.palette.grey[800],
                 }}
@@ -17,7 +17,7 @@ const Footer = () => {
                 <Container maxWidth="lg">
                     <Typography variant="body2" color="text.secondary" align="center">
                         {'© '}
-                        {new Date().getFullYear()} Amber Attire. All rights reserved.
+                        {new Date().getFullYear()} Aangan Attire. All rights reserved.
                     </Typography>
                 </Container>
             </Box>

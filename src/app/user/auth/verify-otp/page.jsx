@@ -33,7 +33,7 @@ const VerifyOtp = () => {
     )
 }
 
-export default WithLayout(VerifyOtp)
+export default VerifyOtp
 
 const VerifyOtpContainer = styled(Box)({
     height: "100%",
