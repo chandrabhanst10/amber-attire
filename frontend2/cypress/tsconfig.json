@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "lib": [
+            "es5",
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
+        "types": [
+            "cypress",
+            "node"
+        ],
+        "strict": true,
+        "esModuleInterop": true,
+        "noEmit": true,
+        "forceConsistentCasingInFileNames": true
+    },
+    "include": [
+        "**/*.ts"
+    ]
+}
